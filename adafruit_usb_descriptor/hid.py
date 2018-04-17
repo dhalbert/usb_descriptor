@@ -152,29 +152,33 @@ ReportDescriptor.GENERIC_KEYBOARD_REPORT = ReportDescriptor(
 
 # Use these report ids for all multi-report HID descriptors.
 
-ReportDescriptor.REPORT_IDS = {
+ReportDescriptor.MULTIDEVICE_REPORT_IDS = {
     "KEYBOARD" : 1,
     "MOUSE" : 2,
     "CONSUMER" : 3,
     "SYS_CONTROL" : 4,
+    "GAMEPAD" : 5,
+    "DIGITIZER" : 6,
     }
 
 # Byte count for each kind of report. Length does not include report ID in first byte.
-ReportDescriptor.REPORT_LENGTHS = {
+ReportDescriptor.MULTIDEVICE_REPORT_LENGTHS = {
     "KEYBOARD" : 8,
     "MOUSE" : 4,
     "CONSUMER" : 2,
     "SYS_CONTROL" : 1,
+    "GAMEPAD" : 6,
+    "DIGITIZER" : 5,
     }
 
-ReportDescriptor.MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT = ReportDescriptor(
-    description="MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT",
+ReportDescriptor.MULTIDEVICE_REPORT = ReportDescriptor(
+    description="MULTIDEVICE_REPORT",
     report_descriptor=bytes([
         # Regular keyboard
         0x05, 0x01,                 # Usage Page (Generic Desktop)
         0x09, 0x06,                 # Usage (Keyboard)
         0xA1, 0x01,                 # Collection (Application)
-        0x85, ReportDescriptor.REPORT_IDS["KEYBOARD"], #   Report ID (1)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["KEYBOARD"], #   Report ID (1)
         0x05, 0x07,                 #   Usage Page (Keyboard)
         0x19, 224,                  #   Usage Minimum (224)
         0x29, 231,                  #   Usage Maximum (231)
@@ -208,7 +212,7 @@ ReportDescriptor.MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT = ReportDescriptor(
         0xA1, 0x01,        # Collection (Application)
         0x09, 0x01,        #   Usage (Pointer)
         0xA1, 0x00,        #   Collection (Physical)
-        0x85, ReportDescriptor.REPORT_IDS["MOUSE"], # Report ID (n)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["MOUSE"], # Report ID (n)
         0x05, 0x09,        #     Usage Page (Button)
         0x19, 0x01,        #     Usage Minimum (0x01)
         0x29, 0x05,        #     Usage Maximum (0x05)
@@ -240,7 +244,7 @@ ReportDescriptor.MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT = ReportDescriptor(
         0x05, 0x0C,        # Usage Page (Consumer)
         0x09, 0x01,        # Usage (Consumer Control)
         0xA1, 0x01,        # Collection (Application)
-        0x85, ReportDescriptor.REPORT_IDS["CONSUMER"], # Report ID (n)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["CONSUMER"], # Report ID (n)
         0x75, 0x10,        #   Report Size (16)
         0x95, 0x01,        #   Report Count (1)
         0x15, 0x01,        #   Logical Minimum (1)
@@ -253,7 +257,7 @@ ReportDescriptor.MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT = ReportDescriptor(
         0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
         0x09, 0x80,        # Usage (Sys Control)
         0xA1, 0x01,        # Collection (Application)
-        0x85, ReportDescriptor.REPORT_IDS["SYS_CONTROL"], # Report ID (n)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["SYS_CONTROL"], # Report ID (n)
         0x75, 0x02,        #   Report Size (2)
         0x95, 0x01,        #   Report Count (1)
         0x15, 0x01,        #   Logical Minimum (1)
@@ -264,5 +268,58 @@ ReportDescriptor.MOUSE_KEYBOARD_CONSUMER_SYS_CONTROL_REPORT = ReportDescriptor(
         0x81, 0x60,        #   Input (Data,Array,Abs,No Wrap,Linear,No Preferred State,Null State)
         0x75, 0x06,        #   Report Size (6)
         0x81, 0x03,        #   Input (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0xC0,              # End Collection
+        # Gamepad with 16 buttons and two joysticks
+	0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
+	0x09, 0x05,        # Usage (Game Pad)
+	0xA1, 0x01,        # Collection (Application)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["GAMEPAD"], # Report ID (n)
+	0x05, 0x09,        #   Usage Page (Button)
+	0x19, 0x01,        #   Usage Minimum (Button 1)
+	0x29, 0x10,        #   Usage Maximum (Button 16)
+	0x15, 0x00,        #   Logical Minimum (0)
+	0x25, 0x01,        #   Logical Maximum (1)
+	0x75, 0x01,        #   Report Size (1)
+	0x95, 0x10,        #   Report Count (16)
+	0x81, 0x02,        #   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0x05, 0x01,        #   Usage Page (Generic Desktop Ctrls)
+	0x15, 0x81,        #   Logical Minimum (-127)
+	0x25, 0x7F,        #   Logical Maximum (127)
+	0x09, 0x30,        #   Usage (X)
+	0x09, 0x31,        #   Usage (Y)
+	0x09, 0x32,        #   Usage (Z)
+	0x09, 0x35,        #   Usage (Rz)
+	0x75, 0x08,        #   Report Size (8)
+	0x95, 0x04,        #   Report Count (4)
+	0x81, 0x02,        #   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0xC0,              # End Collection
+        # Digitizer (used as an absolute pointer)
+        0x05, 0x0D,        # Usage Page (Digitizers)
+        0x09, 0x02,        # Usage (Pen)
+	0xA1, 0x01,        # Collection (Application)
+        0x85, ReportDescriptor.MULTIDEVICE_REPORT_IDS["DIGITIZER"], # Report ID (n)
+        0x09, 0x01,        #   Usage (Stylus)
+        0xA1, 0x00,        #   Collection (Physical)
+        0x09, 0x32,        #     Usage (In-Range)
+        0x09, 0x42,        #     Usage (Tip Switch)
+        0x09, 0x44,        #     Usage (Barrel Switch)
+        0x09, 0x45,        #     Usage (Eraser Switch)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x25, 0x01,        #     Logical Maximum (1)
+        0x75, 0x01,        #     Report Size (1)
+        0x95, 0x05,        #     Report Count (4)
+        0x81, 0x02,        #     Input (Data,Var,Abs)
+        0x75, 0x01,        #     Report Size (4) -- Filler
+        0x95, 0x0b,        #     Report Count (1) -- Filler
+        0x81, 0x01,        #     Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0x05, 0x01,        #     Usage Page (Generic Desktop Ctrls)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x26, 0xff, 0x7f,  #     Logical Maximum (32767)
+        0x09, 0x30,        #     Usage (X)
+        0x09, 0x31,        #     Usage (Y)
+        0x75, 0x10,        #     Report Size (16)
+        0x95, 0x01,        #     Report Count (2)
+        0x81, 0x02,        #     Input (Data,Var,Abs)
+        0xC0,              #   End Collection
         0xC0,              # End Collection
     ]))
